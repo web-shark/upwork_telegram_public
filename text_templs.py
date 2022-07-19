@@ -8,7 +8,7 @@ btn_start_4 = '📲Help'
 
 templ_start = ('Hey there! It is a telegram upwork scapper\n'
                'This bot can parse jobs from rss feeds from Upwork and send new jobs fastly for you\n'
-               '[Where can I find code?](https://github.com/web-shark/upwork_telegram)')
+               '[Where can I find code?](https://github.com/web-shark/upwork_telegram_public)')
 templ_main = ('📒Jobs parsing - $working\n'
               '📑List rss - show rss feed parsed\n'
               '🛠Settings - timezone and time update feed\n'
