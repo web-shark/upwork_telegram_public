@@ -9,7 +9,7 @@ import schedule
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 import config as conf
-import constants
+import text_templs
 import telebot
 from typing import List
 # from decouple import config
@@ -30,17 +30,17 @@ users_db = UsersDB()
 
 
 keyboard_user = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
-keyboard_user.row(constants.btn_start_1)
-keyboard_user.row(constants.btn_start_2, constants.btn_start_3,
-                  constants.btn_start_4)
+keyboard_user.row(text_templs.btn_start_1)
+keyboard_user.row(text_templs.btn_start_2, text_templs.btn_start_3,
+                  text_templs.btn_start_4)
 keyboard_user.one_time_keyboard = True
 
 keyboard_rss = telebot.types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
-keyboard_rss.add(constants.btn_rsslist_1, constants.btn_rsslist_2, constants.btn_rsslist_3, constants.btn_back)
+keyboard_rss.add(text_templs.btn_rsslist_1, text_templs.btn_rsslist_2, text_templs.btn_rsslist_3, text_templs.btn_back)
 keyboard_rss.one_time_keyboard = True
 
 keyboard_setting = telebot.types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
-keyboard_setting.add(constants.btn_setting_1, constants.btn_setting_2, constants.btn_back)
+keyboard_setting.add(text_templs.btn_setting_1, text_templs.btn_setting_2, text_templs.btn_back)
 keyboard_setting.one_time_keyboard = True
 
 
@@ -94,19 +94,19 @@ def start_message(message):
         state = "✅" if state == 1 else "❌"
         bot.send_message(
             message.chat.id,
-            constants.templ_start,
+            text_templs.templ_start,
             parse_mode="Markdown"
         )
         bot.send_message(
             message.chat.id,
-            Template(constants.templ_main).substitute(working=state),
+            Template(text_templs.templ_main).substitute(working=state),
             reply_markup=keyboard_user
         )
 
 
 @bot.message_handler(content_types='text')
 def answer_message(message):
-    if message.text == constants.btn_start_1:
+    if message.text == text_templs.btn_start_1:
         state = users_db.get_user_state(message.chat.id)
         if state == 1:
             del_job_schedule(message.chat.id)
@@ -122,33 +122,33 @@ def answer_message(message):
         state = "✅" if state == 1 else "❌"
         bot.send_message(
             message.chat.id,
-            Template(constants.templ_main).substitute(working=state),
+            Template(text_templs.templ_main).substitute(working=state),
             reply_markup=keyboard_user
         )
-    elif message.text == constants.btn_start_2:
+    elif message.text == text_templs.btn_start_2:
         # add rss links for user
         rss_links = users_db.get_user_rss(message.chat.id)
         text_links = ''
         if len(rss_links) > 0:
             for rss in rss_links:
-                text_links += Template(constants.templ_list_rss_link).substitute(
+                text_links += Template(text_templs.templ_list_rss_link).substitute(
                     link_title=rss['name'], link=rss['url']
                 )
                 # print(text_links)
         else:
-            text_links += constants.templ_list_rss_no
+            text_links += text_templs.templ_list_rss_no
         str1 = ", "
         filters = users_db.get_user_filters(message.chat.id)
-        text_filters = Template(constants.templ_filters).substitute(
+        text_filters = Template(text_templs.templ_filters).substitute(
                     add_skills=str1.join(filters['add_skills']), exclude_countries=str1.join(filters['exclude_countries']))
-        # print(constants.templ_menu + constants.templ_list_rss + text_links + text_filters)
+        # print(text_templs.templ_menu + text_templs.templ_list_rss + text_links + text_filters)
 
         bot.send_message(
             message.chat.id,
-            constants.templ_menu + constants.templ_list_rss + text_links + text_filters,
+            text_templs.templ_menu + text_templs.templ_list_rss + text_links + text_filters,
             reply_markup=keyboard_rss, parse_mode="Markdown"
         )
-    elif message.text == constants.btn_start_3:
+    elif message.text == text_templs.btn_start_3:
         setting = users_db.get_user_settings(message.chat.id)
         if setting["show_summary"] == 'yes':
             text = '✅'
@@ -156,42 +156,42 @@ def answer_message(message):
             text = '❌'
         bot.send_message(
             message.chat.id,
-            Template(constants.templ_setting).substitute(
+            Template(text_templs.templ_setting).substitute(
                 show_summary=text, chat_id=setting["chat"]
             ),
             reply_markup=keyboard_setting
         )
-    elif message.text == constants.btn_start_4:
+    elif message.text == text_templs.btn_start_4:
         # nothing to get
         bot.send_message(
             message.chat.id,
-            constants.templ_help,
+            text_templs.templ_help,
             reply_markup=keyboard_user,
             parse_mode="Markdown",
             disable_web_page_preview=True
         )
-    elif message.text == constants.btn_rsslist_1:
+    elif message.text == text_templs.btn_rsslist_1:
         # nothing to get
         bot.send_message(
             message.chat.id,
-            constants.templ_list_rssadd,
+            text_templs.templ_list_rssadd,
             reply_markup=None
         )
-    elif message.text == constants.btn_rsslist_2:
+    elif message.text == text_templs.btn_rsslist_2:
         # nothing to get
         bot.send_message(
             message.chat.id,
-            constants.templ_list_rss_edit,
+            text_templs.templ_list_rss_edit,
             reply_markup=None
         )
-    elif message.text == constants.btn_rsslist_3:
+    elif message.text == text_templs.btn_rsslist_3:
         # nothing to get
         bot.send_message(
             message.chat.id,
-            constants.templ_list_rssdelete,
+            text_templs.templ_list_rssdelete,
             reply_markup=None
         )
-    elif message.text == constants.btn_setting_1:
+    elif message.text == text_templs.btn_setting_1:
         # set setting
         setting = users_db.get_user_settings(message.chat.id)
         if setting["show_summary"] == 'yes':
@@ -203,29 +203,29 @@ def answer_message(message):
         users_db.set_user_settings(message.chat.id, "show_summary", show_summary)
         bot.send_message(
             message.chat.id,
-            Template(constants.templ_setting).substitute(
+            Template(text_templs.templ_setting).substitute(
                 show_summary=text, chat_id=setting["chat"]
             ),
             reply_markup=keyboard_setting
         )
-    elif message.text == constants.btn_setting_2:
+    elif message.text == text_templs.btn_setting_2:
         # nothing to get
         bot.send_message(
             message.chat.id,
-            constants.templ_send_chat,
+            text_templs.templ_send_chat,
             reply_markup=None
         )
-    elif message.text == constants.btn_back:
+    elif message.text == text_templs.btn_back:
         # as start msg
         users_db.get_user(message.chat.id)
         state = users_db.get_user_state(message.chat.id)
         state = "✅" if state == 1 else "❌"
         bot.send_message(
             message.chat.id,
-            Template(constants.templ_main).substitute(working=state),
+            Template(text_templs.templ_main).substitute(working=state),
             reply_markup=keyboard_user
         )
-    elif (message.text.split()[0]).lower() == constants.text_command_1:
+    elif (message.text.split()[0]).lower() == text_templs.text_command_1:
         regex_url = re.compile(
             r'^(?:http|ftp)s?://'  # http:// or https://
             r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|'  # domain...
@@ -242,32 +242,32 @@ def answer_message(message):
                 users_db.add_user_rss(message.chat.id, rss_feed)
                 bot.send_message(
                     message.chat.id,
-                    constants.templ_list_rssadd_good
+                    text_templs.templ_list_rssadd_good
                 )
             else:
                 bot.send_message(
                     message.chat.id,
-                    constants.templ_list_rssadd_bad_link
+                    text_templs.templ_list_rssadd_bad_link
                 )
         else:
             bot.send_message(
                 message.chat.id,
-                constants.templ_list_rssadd_bad_command
+                text_templs.templ_list_rssadd_bad_command
             )
-    elif (message.text.split()[0]).lower() == constants.text_command_2:
+    elif (message.text.split()[0]).lower() == text_templs.text_command_2:
         info = message.text.split(' ')
         if len(info) == 2:
             users_db.delete_user_rss(message.chat.id, info[1])
             bot.send_message(
                 message.chat.id,
-                constants.templ_list_rssdelete_good
+                text_templs.templ_list_rssdelete_good
             )
         else:
             bot.send_message(
                 message.chat.id,
-                constants.templ_list_rssdelete_bad
+                text_templs.templ_list_rssdelete_bad
             )
-    elif (message.text.split()[0]).lower() == constants.text_command_3:
+    elif (message.text.split()[0]).lower() == text_templs.text_command_3:
         info = message.text.split(' ')
         if len(info) == 3:
             str1 = " "
@@ -277,7 +277,7 @@ def answer_message(message):
                 users_db.set_user_filter(message.chat.id, info[1], value)
                 bot.send_message(
                     message.chat.id,
-                    Template(constants.templ_add_filter).substitute(keyword=info[1], value=str1.join(value))
+                    Template(text_templs.templ_add_filter).substitute(keyword=info[1], value=str1.join(value))
                 )
             elif info[1] == 'add_skills':
                 value = info[2].split(',')
@@ -285,28 +285,28 @@ def answer_message(message):
                 users_db.set_user_filter(message.chat.id, info[1], value)
                 bot.send_message(
                     message.chat.id,
-                    Template(constants.templ_add_filter).substitute(keyword=info[1], value=str1.join(value)))
+                    Template(text_templs.templ_add_filter).substitute(keyword=info[1], value=str1.join(value)))
             else:
                 bot.send_message(
                     message.chat.id,
-                    constants.error_bad_filter
+                    text_templs.error_bad_filter
                 )
         else:
             bot.send_message(
                 message.chat.id,
-                constants.error_notype
+                text_templs.error_notype
             )
-    elif message.text.split()[0].lower() == constants.text_command_4:
+    elif message.text.split()[0].lower() == text_templs.text_command_4:
         if len(message.text.split()) == 2:
             users_db.set_user_settings(message.chat.id, "chat", message.text.split(' ')[1])
             bot.send_message(
                 message.chat.id,
-                constants.templ_send_chat_good
+                text_templs.templ_send_chat_good
             )
         else:
             bot.send_message(
                 message.chat.id,
-                constants.error_notype
+                text_templs.error_notype
             )
     else:
         print(message.text.split())
@@ -315,11 +315,11 @@ def answer_message(message):
         state = "✅" if state == 1 else "❌"
         bot.send_message(
             message.chat.id,
-            constants.error_notype
+            text_templs.error_notype
         )
         bot.send_message(
             message.chat.id,
-            Template(constants.templ_main).substitute(working=state),
+            Template(text_templs.templ_main).substitute(working=state),
             reply_markup=keyboard_user
         )
 

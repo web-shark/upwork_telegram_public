@@ -1,5 +1,5 @@
 import pymongo
-from constants import ALLOWED_FILTERS as ITERABLE_FILTERS
+from text_templs import ALLOWED_FILTERS as ITERABLE_FILTERS
 import config
 
 

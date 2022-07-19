@@ -52,7 +52,7 @@ btn_setting_2 = '💬Chat to send jobs'
 templ_send_chat = ('Chat id to send jobs, usefull for teams'
                    '\n ex:chat -1412365234')
 templ_help = ('ℹ️[How to find rss link?](https://telegra.ph/How-to-find-rss-link-07-19)'
-              '\n💻[Where can I find code?](https://github.com/web-shark/upwork_telegram)'
+              '\n💻[Where can I find code?](https://github.com/web-shark/upwork_telegram_public)'
               '\n💸[Send money on cap of coffee.](https://www.buymeacoffee.com/serhiibliakhars)'
               '\n📲[Find error or need telegram bot? Write me.](https://t.me/sergey_bliacharskiy)')
 
